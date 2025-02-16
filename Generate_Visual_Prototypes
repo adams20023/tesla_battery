@@ -1,0 +1,53 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Create a directory for images if it doesn't exist
+import os
+os.makedirs("images", exist_ok=True)
+
+# Function to generate a battery diagram
+def generate_battery_diagram(capacity_kwh, consumption_kwh_per_mile, range_miles, filename):
+    fig, ax = plt.subplots(figsize=(8, 6))
+    
+    # Battery outline
+    battery_outline = plt.Rectangle((0.1, 0.1), 0.8, 0.6, edgecolor="black", facecolor="lightblue", linewidth=2)
+    ax.add_patch(battery_outline)
+    
+    # Battery cells
+    num_cells = int(capacity_kwh / 10)  # Assume each cell represents 10 kWh
+    cell_width = 0.7 / num_cells
+    for i in range(num_cells):
+        cell = plt.Rectangle((0.15 + i * cell_width, 0.15), cell_width * 0.9, 0.5, edgecolor="black", facecolor="blue")
+        ax.add_patch(cell)
+    
+    # Add labels
+    ax.text(0.5, 0.8, f"Battery Capacity: {capacity_kwh} kWh", fontsize=12, ha="center")
+    ax.text(0.5, 0.7, f"Energy Consumption: {consumption_kwh_per_mile:.3f} kWh/mile", fontsize=12, ha="center")
+    ax.text(0.5, 0.6, f"Range: {range_miles:.0f} miles", fontsize=12, ha="center")
+    
+    # Remove axes
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.axis("off")
+    
+    # Save the figure
+    plt.savefig(f"images/{filename}", dpi=300)
+    plt.close()
+
+# Generate current battery diagram
+generate_battery_diagram(
+    capacity_kwh=100,
+    consumption_kwh_per_mile=0.227,
+    range_miles=440,
+    filename="current_battery.png"
+)
+
+# Generate improved battery diagram
+generate_battery_diagram(
+    capacity_kwh=180,
+    consumption_kwh_per_mile=0.125,
+    range_miles=800,
+    filename="improved_battery.png"
+)
+
+print("Battery diagrams generated and saved in the 'images/' folder.")
